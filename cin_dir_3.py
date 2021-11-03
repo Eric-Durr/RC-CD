@@ -98,7 +98,7 @@ if len(sys.argv) != nvar+1:
   sys.exit('El número de articulaciones no es el correcto ('+str(nvar)+')')
 p=[float(i) for i in sys.argv[1:nvar+1]]
 
-#-#-# Manipulador 1
+#-#-# Manipulador 3
 
 # Parámetros D-H:
 #         1     2    2'    3           4        5.1    6         5.2
