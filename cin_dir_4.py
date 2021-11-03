@@ -101,11 +101,11 @@ p=[float(i) for i in sys.argv[1:nvar+1]]
 #-#-# Manipulador 4
 
 # Parámetros D-H:
-#         1     2        3     4   5.1       7    5.2   6.1    6.2
-d  = [ p[0],    0,       0,    5,    1, 1+p[4],     1, p[5], p[5]]
-th = [    0, p[1], p[2]+90, p[3],    0,      0,     0,    0,   0]
-a  = [    2,    2,       0,    0, p[4],      0, -p[4],    0,   0]
-al = [    0,   90,      90,   0,    0,       0,     0,    0,   0]
+#         0' 1     2        3     4   4.1    4.2   5.1       7    5.2   6.1    6.2
+d  = [ p[0], 0,    0,       0,    5,    0,     0,    1, 1+p[4],     1, p[5], p[5]]
+th = [    0, 0, p[1], p[2]+90, p[3],    0,     0,    0,      0,     0,    0,    0]
+a  = [    0, 2,    2,       0,    0, p[4], -p[4],    0,      0,     0,    0,    0]
+al = [    0, 0,   90,      90,    0,    0,     0,    0,      0,     0,    0,    0]
 
 
 # Orígenes para cada articulación
@@ -121,22 +121,27 @@ o6161 =[0,0,0,1]
 o77   =[0,0,0,1]
 # Cálculo matrices transformación
 T00P =matriz_T(d [0],th [0],a [0],al [0])
-T01 =matriz_T(d [0],th [0],a [0],al [0])
-T12 =matriz_T(d [1],th [1],a [1],al [1])
+T0P1 =matriz_T(d [1],th [1],a [1],al [1])
+T01 =np.dot(T00P ,T0P1)
+T12 =matriz_T(d [2],th [2],a [2],al [2])
 T02 =np.dot(T01 ,T12)
-T23 = matriz_T(d [2],th [2],a [2],al [2])
+T23 = matriz_T(d [3],th [3],a [3],al [3])
 T03 =np.dot(T02, T23 )
-T34 = matriz_T(d [3],th [3],a [3],al [3])
+T34 = matriz_T(d [4],th [4],a [4],al [4])
 T04 =np.dot(T03, T34 )
-T451 = matriz_T(d [4],th [4],a [4],al [4])
-T051 =np.dot(T04, T451 )
-T452 = matriz_T(d [6],th [6],a [6],al [6])
-T052 =np.dot(T04, T452 )
+T441 = matriz_T(d [5],th [5],a [5],al [5])
+T041 =np.dot(T04, T441 )
+T442 = matriz_T(d [6],th [6],a [6],al [6])
+T042 =np.dot(T04, T442 )
+T4151 = matriz_T(d [9],th [9],a [9],al [9])
+T051 =np.dot(T04, T4151 )
+T4252 = matriz_T(d [10],th [10],a [10],al [10])
+T052 =np.dot(T04, T4252 )
 T5161 = matriz_T(d [7],th [7],a [7],al [7])
 T061 =np.dot(T051, T5161 )
 T5262 = matriz_T(d [8],th [8],a [8],al [8])
 T062 =np.dot(T052, T5262 )
-T47 = matriz_T(d [5],th [5],a [5],al [5])
+T47 = matriz_T(d [7],th [8],a [8],al [8])
 T07 =np.dot(T04, T47 )
 # Transformación de cada articulación
 o10  =np.dot(T01 , o11 ).tolist()
