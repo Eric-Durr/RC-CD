@@ -102,7 +102,7 @@ p=[float(i) for i in sys.argv[1:nvar+1]]
 
 # Parámetros D-H:
 #         0' 1     2        3     4   4.1    4.2   5.1       7    5.2   6.1    6.2
-d  = [ p[0], 0,    0,       0,    5,    0,     0,    1, 1+p[4],     1, p[5], p[5]]
+d  = [ p[0], 0,    0,       0,    5,    0,     0,    1, 1+p[5],     1, p[5], p[5]]
 th = [    0, 0, p[1], p[2]+90, p[3],    0,     0,    0,      0,     0,    0,    0]
 a  = [    0, 2,    2,       0,    0, p[4], -p[4],    0,      0,     0,    0,    0]
 al = [    0, 0,   90,      90,    0,    0,     0,    0,      0,     0,    0,    0]
@@ -110,10 +110,13 @@ al = [    0, 0,   90,      90,    0,    0,     0,    0,      0,     0,    0,    
 
 # Orígenes para cada articulación
 o00   =[0,0,0,1]
+o0P0P   =[0,0,0,1]
 o11   =[0,0,0,1]
 o22   =[0,0,0,1]
 o33   =[0,0,0,1]
 o44   =[0,0,0,1]
+o4141   =[0,0,0,1]
+o4242   =[0,0,0,1]
 o5252 =[0,0,0,1]
 o5151 =[0,0,0,1]
 o6262 =[0,0,0,1]
@@ -133,21 +136,24 @@ T441 = matriz_T(d [5],th [5],a [5],al [5])
 T041 =np.dot(T04, T441 )
 T442 = matriz_T(d [6],th [6],a [6],al [6])
 T042 =np.dot(T04, T442 )
-T4151 = matriz_T(d [9],th [9],a [9],al [9])
-T051 =np.dot(T04, T4151 )
-T4252 = matriz_T(d [10],th [10],a [10],al [10])
-T052 =np.dot(T04, T4252 )
-T5161 = matriz_T(d [7],th [7],a [7],al [7])
+T4151 = matriz_T(d [7],th [7],a [7],al [7])
+T051 =np.dot(T041, T4151 )
+T4252 = matriz_T(d [9],th [9],a [9],al [9])
+T052 =np.dot(T042, T4252 )
+T5161 = matriz_T(d [10],th [10],a [10],al [10])
 T061 =np.dot(T051, T5161 )
-T5262 = matriz_T(d [8],th [8],a [8],al [8])
+T5262 = matriz_T(d [11],th [11],a [11],al [11])
 T062 =np.dot(T052, T5262 )
-T47 = matriz_T(d [7],th [8],a [8],al [8])
+T47 = matriz_T(d [8],th [8],a [8],al [8])
 T07 =np.dot(T04, T47 )
 # Transformación de cada articulación
+o0P0  =np.dot(T00P , o0P0P ).tolist()
 o10  =np.dot(T01 , o11 ).tolist()
 o20  =np.dot(T02 , o22 ).tolist()
 o30  =np.dot(T03 , o33 ).tolist()
 o40  =np.dot(T04 , o44 ).tolist()
+o410  =np.dot(T041 , o4141 ).tolist()
+o420  =np.dot(T042 , o4242 ).tolist()
 o510  =np.dot(T051 , o5151 ).tolist()
 o520  =np.dot(T052 , o5252 ).tolist()
 o610  =np.dot(T061 , o6161 ).tolist()
@@ -156,6 +162,6 @@ o70  =np.dot(T07 , o77 ).tolist()
 
 # Mostrar resultado de la cinemática directa
 muestra_origenes([o00 ,o10 ,o20 ,o30 ,o40, o510, o520, o610, o620, o70])
-muestra_robot   ([o00 ,o10 ,o20 ,o30 ,o40 ,[[o510, o610],[o520, o620]]], o70)
+muestra_robot   ([o00 ,o0P0 ,o10 ,o20 ,o30 ,o40 ,[[o410,o510, o610],[o420, o520, o620]]], o70)
 input()
 
