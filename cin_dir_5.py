@@ -14,7 +14,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from cin_dir_4 import T00P, T0P1
 
 # ******************************************************************************
 # Declaración de funciones
@@ -105,9 +104,9 @@ p=[float(i) for i in sys.argv[1:nvar+1]]
 # Parámetros D-H:
 #         0'     1    1'  1''   2     3      4.1      4.2  EF
 d  = [    5,     2,    0,   0,  2,    5,       0,       0,  0]
-th = [ p[0], -p[1], -180,  90,  0, p[2], 90-p[3], 90+p[3], 90]
+th = [ p[0], -p[1], -180,  -90,  0, p[2], 90-p[3], 90+p[3], 90]
 a  = [    0,     0,    3,   0,  0,    0,       1,       1,  1]
-al = [  -90,     0,    0, 180, 90,  -90,       0,       0,  0]
+al = [   90,     0,    0, 180, 90,  90,       0,       0,  0]
 
 # Orígenes para cada articulación
 o00 =[0,0,0,1]
