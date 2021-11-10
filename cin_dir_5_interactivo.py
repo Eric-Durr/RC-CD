@@ -179,10 +179,10 @@ elbow_slider = Slider(ax3, "elbow rotation", -50, 180, valinit=0)
 wrist_slider = Slider(ax4, "wrist rotation", -360, 360, valinit=0)
 claw_slider = Slider(ax5, "claw aperture", 0, 90, valinit=30)
 def update(val): 
-  ors = int(origin_slider.val)
-  els = int(elbow_slider.val)
-  wrs = int(wrist_slider.val)
-  clv = int(claw_slider.val)
+  ors = origin_slider.val
+  els = elbow_slider.val
+  wrs = wrist_slider.val
+  clv = claw_slider.val
   
   # Parámetros D-H:
   #       0'     1    1'  1''   2    3      4.1    4.2  EF
