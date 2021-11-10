@@ -184,8 +184,8 @@ v_extensor_slider = Slider(ax4, "L1", 0, 6, valinit=3, valstep=0.01,orientation=
 elbow_slider = Slider(ax1, "theta2", -150, 150, valinit=0)
 v_wrist_slider = Slider(ax2, "theta3", -150, 150, valinit=0)
 h_wrist_slider = Slider(ax3, "theta4", -180, 180, valinit=0)
-v_claw_slider = Slider(ax5, "L5", -90, 90, valinit=2, valstep=0.01,orientation="vertical")
-h_claw_slider = Slider(ax6, "L6", -150, 150, valinit=1, valstep=0.01,orientation="vertical")
+v_claw_slider = Slider(ax5, "L5", 0, 4, valinit=2, valstep=0.01,orientation="vertical")
+h_claw_slider = Slider(ax6, "L6", 0, 2, valinit=1, valstep=0.01,orientation="vertical")
 
 def update(val): 
   vxs = v_extensor_slider.val
