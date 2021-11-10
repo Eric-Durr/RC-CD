@@ -12,7 +12,6 @@ import sys
 from math import *
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
 from mpl_toolkits.mplot3d import Axes3D
 
 # ******************************************************************************
@@ -109,116 +108,21 @@ am1  = [  10,   5]
 alm1 = [   0,   0]
 
 # Orígenes para cada articulación
-o00=[0,0,0,1]
-o11=[0,0,0,1]
-o22=[0,0,0,1]
+o00m1=[0,0,0,1]
+o11m1=[0,0,0,1]
+o22m1=[0,0,0,1]
 
 # Cálculo matrices transformación
-T01=matriz_T(dm1[0],thm1[0],am1[0],alm1[0])
-T12=matriz_T(dm1[1],thm1[1],am1[1],alm1[1])
-T02=np.dot(T01,T12)
+T01m1=matriz_T(dm1[0],thm1[0],am1[0],alm1[0])
+T12m1=matriz_T(dm1[1],thm1[1],am1[1],alm1[1])
+T02m1=np.dot(T01m1,T12m1)
 
 # Transformación de cada articulación
-o10 =np.dot(T01, o11).tolist()
-o20 =np.dot(T02, o22).tolist()
+o10m1 =np.dot(T01m1, o11m1).tolist()
+o20m1 =np.dot(T02m1, o22m1).tolist()
 
 # Mostrar resultado de la cinemática directa
-muestra_origenes([o00 ,o10 ,o20])
-
-## Visualización interactiva del robot
-
-ef = o20
-OR = ramal([o00, o10, o20])
-OT = np.array(OR).T
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-
-axcolor = 'lightgoldenrodyellow'
-ax2 = fig.add_axes([0.25,0.05,0.65, 0.03])
-ax3 = fig.add_axes([0.1,0.25,0.0225, 0.63])
-#
-origin_slider = Slider(ax2, "origin rotation", -90, 90, valinit=0)
-elbow_slider = Slider(ax3, "elbow rotation", -150, 150, valinit=0,orientation="vertical")
-
-def update(val): 
-  ors = int(origin_slider.val)
-  els = int(elbow_slider.val)
-  
-  # Parámetros D-H:
-  #        1    2
-  dm1  = [   0,   0]
-  thm1 = [ors,els]
-  am1  = [  10,   5]
-  alm1 = [   0,   0]
-
-  # Orígenes para cada articulación
-  o00=[0,0,0,1]
-  o11=[0,0,0,1]
-  o22=[0,0,0,1]
-
-  # Cálculo matrices transformación
-  T01=matriz_T(dm1[0],thm1[0],am1[0],alm1[0])
-  T12=matriz_T(dm1[1],thm1[1],am1[1],alm1[1])
-  T02=np.dot(T01,T12)
-
-  # Transformación de cada articulación
-  o10 =np.dot(T01, o11).tolist()
-  o20 =np.dot(T02, o22).tolist()
-  ef = o20
-  OR = ramal([o00, o10, o20])
-  OT = np.array(OR).T
-  max_range = np.array([OT[0].max()-OT[0].min()
-                      ,OT[1].max()-OT[1].min()
-                      ,OT[2].max()-OT[2].min()
-                      ]).max()
-  Xb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten()
-      + 0.5*(OT[0].max()+OT[0].min()))
-  Yb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten()
-      + 0.5*(OT[1].max()+OT[1].min()))
-  Zb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten()
-      + 0.5*(OT[2].max()+OT[2].min()))
-  ax.cla()
-  for xb, yb, zb in zip(Xb, Yb, Zb):
-      ax.plot([xb], [yb], [zb], 'w')
-  ax.plot3D(OT[0],OT[1],OT[2],marker='s')
-  ax.plot3D([0],[0],[0],marker='o',color='k',ms=10)
-  if not ef:
-    ef = OR[-1]
-  ax.plot3D([ef[0]],[ef[1]],[ef[2]],marker='s',color='r')
-  ax.set_xlabel('X')
-  ax.set_ylabel('Y')
-  ax.set_zlabel('Z')
-
-
-
-# Bounding box cúbico para simular el ratio de aspecto correcto
-max_range = np.array([OT[0].max()-OT[0].min()
-                      ,OT[1].max()-OT[1].min()
-                      ,OT[2].max()-OT[2].min()
-                      ]).max()
-Xb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten()
-    + 0.5*(OT[0].max()+OT[0].min()))
-Yb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten()
-    + 0.5*(OT[1].max()+OT[1].min()))
-Zb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten()
-    + 0.5*(OT[2].max()+OT[2].min()))
-for xb, yb, zb in zip(Xb, Yb, Zb):
-    ax.plot([xb], [yb], [zb], 'w')
-ax.plot3D(OT[0],OT[1],OT[2],marker='s')
-ax.plot3D([0],[0],[0],marker='o',color='k',ms=10)
-if not ef:
-  ef = OR[-1]
-ax.plot3D([ef[0]],[ef[1]],[ef[2]],marker='s',color='r')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-
-
-origin_slider.on_changed(update)
-elbow_slider.on_changed(update)
-
-plt.show()
-
+muestra_origenes([o00m1,o10m1,o20m1])
+muestra_robot   ([o00m1,o10m1,o20m1])
 input()
-
 

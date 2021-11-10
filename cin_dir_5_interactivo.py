@@ -103,9 +103,7 @@ if len(sys.argv) != nvar+1:
   sys.exit('El número de articulaciones no es el correcto ('+str(nvar)+')')
 p=[float(i) for i in sys.argv[1:nvar+1]]
 
-#ax_plot = plt.axes([0.25,0.1,0.65,0.03], facecolor="red")
-#claw_slider = Slider(ax_plot, label="manejador de pinza", valmin=0.1,valmax=90)
-#-#-# Manipulador 1
+#-#-# Manipulador 5
 
 
 # Parámetros D-H:
@@ -160,7 +158,6 @@ o420  =np.dot(T042 , o4242 ).tolist()
 oEF0  =np.dot(T0EF , oEFEF ).tolist()
 
 ## Mostrar resultado de la cinemática directa
-#claw_slider.on_changed(update)
 muestra_origenes([o00 ,o10 ,o20 ,o30 ,o410 ,o420 ,oEF0])
 
 ## Visualización interactiva del robot
