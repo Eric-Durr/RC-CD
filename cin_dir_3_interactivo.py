@@ -158,17 +158,17 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 axcolor = 'lightgoldenrodyellow'
-ax1 = fig.add_axes([0.25,0.05,0.65, 0.03])
-ax2 = fig.add_axes([0.25,0.1,0.65, 0.03])
+ax1 = fig.add_axes([0.25,0.0,0.65, 0.03])
+ax2 = fig.add_axes([0.25,0.05,0.65, 0.03])
 ax3 = fig.add_axes([0.05,0.25,0.0225, 0.63])
-ax4 = fig.add_axes([0.15,0.25,0.0225, 0.63])
-ax5 = fig.add_axes([0.25,0.25,0.0225, 0.63])
+ax4 = fig.add_axes([0.1,0.25,0.0225, 0.63])
+ax5 = fig.add_axes([0.15,0.25,0.0225, 0.63])
 #
 v_extensor_slider = Slider(ax1, "vertical extensor", 0, 6, valinit=2, valstep=0.01)
-elbow_slider = Slider(ax3, "elbow rotation", -180, 180, valinit=0,orientation="vertical")
+elbow_slider = Slider(ax3, "elbow ", -180, 180, valinit=0,orientation="vertical")
 h_extensor_slider = Slider(ax2, "horizontal extensor", 0, 3, valinit=2, valstep=0.01)
-wrist_slider = Slider(ax4, "wrist rotation", -180, 180, valinit=0,orientation="vertical")
-claw_slider = Slider(ax5, "claw grab", 0, 90, valinit=30, orientation="vertical")
+wrist_slider = Slider(ax4, "wrist ", -180, 180, valinit=0,orientation="vertical")
+claw_slider = Slider(ax5, "claw ", 0, 90, valinit=30, orientation="vertical")
 
 def update(val): 
   vxs = v_extensor_slider.val

@@ -169,15 +169,15 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 axcolor = 'lightgoldenrodyellow'
-ax2 = fig.add_axes([0.25,0.0,0.65, 0.03])
-ax3 = fig.add_axes([0.25,0.1,0.65, 0.03])
-ax4 = fig.add_axes([0.25,0.2,0.65, 0.03])
-ax5 = fig.add_axes([0.25,0.3,0.65, 0.03])
+ax1 = fig.add_axes([0.25,0.0,0.65, 0.03])
+ax2 = fig.add_axes([0.25,0.05,0.65, 0.03])
+ax3 = fig.add_axes([0.05,0.25,0.0225, 0.63])
+ax4 = fig.add_axes([0.1,0.25,0.0225, 0.63])
 #
-origin_slider = Slider(ax2, "origin rotation", -360, 360, valinit=0)
-elbow_slider = Slider(ax3, "elbow rotation", -50, 180, valinit=0)
-wrist_slider = Slider(ax4, "wrist rotation", -360, 360, valinit=0)
-claw_slider = Slider(ax5, "claw aperture", 0, 90, valinit=30)
+origin_slider = Slider(ax1, "origin rotation", -360, 360, valinit=0)
+elbow_slider = Slider(ax2, "elbow rotation", -50, 180, valinit=0)
+wrist_slider = Slider(ax3, "wrist ", -360, 360, valinit=0, orientation="vertical")
+claw_slider = Slider(ax4, "claw ", 0, 90, valinit=30, orientation="vertical")
 def update(val): 
   ors = origin_slider.val
   els = elbow_slider.val

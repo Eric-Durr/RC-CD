@@ -137,8 +137,8 @@ axcolor = 'lightgoldenrodyellow'
 ax2 = fig.add_axes([0.25,0.05,0.65, 0.03])
 ax3 = fig.add_axes([0.1,0.25,0.0225, 0.63])
 #
-origin_slider = Slider(ax2, "origin rotation", -90, 90, valinit=0)
-elbow_slider = Slider(ax3, "elbow rotation", -150, 150, valinit=0,orientation="vertical")
+origin_slider = Slider(ax2, "Base", -90, 90, valinit=0)
+elbow_slider = Slider(ax3, "Elbow", -150, 150, valinit=0,orientation="vertical")
 
 def update(val): 
   ors = origin_slider.val
