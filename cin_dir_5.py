@@ -106,14 +106,17 @@ p=[float(i) for i in sys.argv[1:nvar+1]]
 
 
 # Parámetros D-H:
-#         1     2     3      4.1      4.2  EF
-d  = [    5,    0, -p[2],       0,       0,  0]
-th = [ p[0],    0,    0, 90+p[3], 90-p[3], 90]
-a  = [    0, p[1],    0,       1,       1,  1]
-al = [    0,    0,   -90,       0,       0,  0]
+#         0'     1    1'  1''   2     3      4.1      4.2  EF
+d  = [    5,     2,    0,   0,  2,    5,       0,       0,  0]
+th = [ p[0], -p[1], -180,  -90,  0, p[2], 90-p[3], 90+p[3], 90]
+a  = [    0,     0,    3,   0,  0,    0,       1,       1,  1]
+al = [   90,     0,    0, 180, 90,  90,       0,       0,  0]
 # Orígenes para cada articulación
 o00 =[0,0,0,1]
+o0P0P =[0,0,0,1]
 o11 =[0,0,0,1]
+o1P1P =[0,0,0,1]
+o1PP1PP =[0,0,0,1]
 o22 =[0,0,0,1]
 o33 =[0,0,0,1]
 o4141 =[0,0,0,1]
@@ -121,24 +124,32 @@ o4242 =[0,0,0,1]
 oEFEF =[0,0,0,1]
 
 # Cálculo matrices transformación
-T01 =matriz_T(d [0],th [0],a [0],al [0])
-T12 =matriz_T(d [1],th [1],a [1],al [1])
-T02 =np.dot(T01 ,T12)
-T23 =matriz_T(d [2],th [2],a [2],al [2])
+T00P =matriz_T(d [0],th [0],a [0],al [0])
+T0P1 =matriz_T(d [1],th [1],a [1],al [1])
+T01 =np.dot(T00P ,T0P1)
+T11P =matriz_T(d [2],th [2],a [2],al [2])
+T01P =np.dot(T01 ,T11P)
+T1P1PP =matriz_T(d [3],th [3],a [3],al [3])
+T01PP =np.dot(T01P ,T1P1PP)
+T1PP2 =matriz_T(d [4],th [4],a [4],al [4])
+T02 =np.dot(T01PP ,T1PP2)
+T23 =matriz_T(d [5],th [5],a [5],al [5])
 T03 =np.dot(T02, T23 )
 
-T341 =matriz_T(d [3],th [3],a [3],al [3])
+T341 =matriz_T(d [6],th [6],a [6],al [6])
 T041 =np.dot(T03, T341 )
-
-T342 =matriz_T(d [4],th [4],a [4],al [4])
+T342 =matriz_T(d [7],th [7],a [7],al [7])
 T042 =np.dot(T03, T342 )
 
-T3EF =matriz_T(d [5],th [5],a [5],al [5])
+T3EF =matriz_T(d [8],th [8],a [8],al [8])
 T0EF =np.dot(T03, T3EF )
 
 
 # Transformación de cada articulación
+o0P0  =np.dot(T00P , o00 ).tolist()
 o10  =np.dot(T01 , o11 ).tolist()
+o1P0  =np.dot(T01P , o1P1P ).tolist()
+o1PP0  =np.dot(T01PP , o1PP1PP ).tolist()
 o20  =np.dot(T02 , o22 ).tolist()
 o30  =np.dot(T03 , o33 ).tolist()
 o410  =np.dot(T041 , o4141 ).tolist()
@@ -147,8 +158,64 @@ oEF0  =np.dot(T0EF , oEFEF ).tolist()
 
 
 
-
+#def update(val):
+#  # Parámetros D-H:
+#  #         0'     1    1'  1''   2     3      4.1      4.2  EF
+##  d  = [    5,     2,    0,   0,  2,    5,       0,       0,  0]
+##  th = [ p[0], -p[1], -180,  -90,  0, p[2], 90-claw_slider.val, 90+claw_slider.val, 90]
+##  a  = [    0,     0,    3,   0,  0,    0,       1,       1,  1]
+##  al = [   90,     0,    0, 180, 90,  90,       0,       0,  0]
+##
+##  # Orígenes para cada articulación
+##  o00 =[0,0,0,1]
+##  o0P0P =[0,0,0,1]
+##  o11 =[0,0,0,1]
+##  o1P1P =[0,0,0,1]
+##  o1PP1PP =[0,0,0,1]
+##  o22 =[0,0,0,1]
+##  o33 =[0,0,0,1]
+##  o4141 =[0,0,0,1]
+##  o4242 =[0,0,0,1]
+##  oEFEF =[0,0,0,1]
+##
+##  # Cálculo matrices transformación
+##  T00P =matriz_T(d [0],th [0],a [0],al [0])
+##  T0P1 =matriz_T(d [1],th [1],a [1],al [1])
+##  T01 =np.dot(T00P ,T0P1)
+##  T11P =matriz_T(d [2],th [2],a [2],al [2])
+##  T01P =np.dot(T01 ,T11P)
+##  T1P1PP =matriz_T(d [3],th [3],a [3],al [3])
+##  T01PP =np.dot(T01P ,T1P1PP)
+##  T1PP2 =matriz_T(d [4],th [4],a [4],al [4])
+##  T02 =np.dot(T01PP ,T1PP2)
+##  T23 =matriz_T(d [5],th [5],a [5],al [5])
+##  T03 =np.dot(T02, T23 )
+##
+##  T341 =matriz_T(d [6],th [6],a [6],al [6])
+##  T041 =np.dot(T03, T341 )
+##  T342 =matriz_T(d [7],th [7],a [7],al [7])
+##  T042 =np.dot(T03, T342 )
+##
+##  T3EF =matriz_T(d [8],th [8],a [8],al [8])
+##  T0EF =np.dot(T03, T3EF )
+##
+##
+##  # Transformación de cada articulación
+##  o0P0  =np.dot(T00P , o00 ).tolist()
+##  o10  =np.dot(T01 , o11 ).tolist()
+##  o1P0  =np.dot(T01P , o1P1P ).tolist()
+##  o1PP0  =np.dot(T01PP , o1PP1PP ).tolist()
+##  o20  =np.dot(T02 , o22 ).tolist()
+##  o30  =np.dot(T03 , o33 ).tolist()
+##  o410  =np.dot(T041 , o4141 ).tolist()
+##  o420  =np.dot(T042 , o4242 ).tolist()
+##  oEF0  =np.dot(T0EF , oEFEF ).tolist()
+##  muestra_robot ([o00, o0P0, o10, o1P0, o20, o30,[[o410],[o420]]], oEF0)
+#  muestra_robot ([o00, o0P0, o10, o1P0, o20, o30,[[o410],[o420]]], oEF0)
+#
+## Mostrar resultado de la cinemática directa
+#claw_slider.on_changed(update)
 muestra_origenes([o00 ,o10 ,o20 ,o30 ,o410 ,o420 ,oEF0])
-muestra_robot   ([o00, o10, o20, o30,[[o410],[o420]]], oEF0)
+muestra_robot   ([o00, o0P0, o10, o1P0, o20, o30,[[o410],[o420]]], oEF0)
 
 input()
