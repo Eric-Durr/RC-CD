@@ -147,8 +147,129 @@ oEF0  =np.dot(T0EF , oEFEF ).tolist()
 
 
 
-
+## Mostrar resultado de la cinemática directa
 muestra_origenes([o00 ,o10 ,o20 ,o30 ,o410 ,o420 ,oEF0])
-muestra_robot   ([o00, o10, o20, o30,[[o410],[o420]]], oEF0)
+
+## Visualización interactiva del robot
+
+ef = oEF0
+OR = ramal([o00, o10, o20, o30,[[o410],[o420]]])
+OT = np.array(OR).T
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+axcolor = 'lightgoldenrodyellow'
+ax1 = fig.add_axes([0.25,0.0,0.65, 0.03])
+ax2 = fig.add_axes([0.25,0.05,0.65, 0.03])
+ax3 = fig.add_axes([0.05,0.25,0.0225, 0.63])
+ax4 = fig.add_axes([0.1,0.25,0.0225, 0.63])
+#
+origin_slider = Slider(ax1, "origin rotation", -180, 180, valinit=0)
+elbow_slider = Slider(ax2, "hor ext", 0, 6, valinit=2, valstep=0.01)
+wrist_slider = Slider(ax3, "ver ext ", 0, 6, valinit=2, valstep=0.01, orientation="vertical")
+claw_slider = Slider(ax4, "claw ", 0, 90, valinit=30, orientation="vertical")
+def update(val): 
+  ors = origin_slider.val
+  els = elbow_slider.val
+  wrs = wrist_slider.val
+  clv = claw_slider.val
+  
+  # Parámetros D-H:
+  #         1     2     3      4.1      4.2  EF
+  d  = [    5,    0, -wrs,       0,       0,  0]
+  th = [ ors,    0,    0, 90+clv, 90-clv, 90]
+  a  = [    0, els,    0,       1,       1,  1]
+  al = [    0,    0,   -90,       0,       0,  0]
+  # Orígenes para cada articulación
+  o00 =[0,0,0,1]
+  o11 =[0,0,0,1]
+  o22 =[0,0,0,1]
+  o33 =[0,0,0,1]
+  o4141 =[0,0,0,1]
+  o4242 =[0,0,0,1]
+  oEFEF =[0,0,0,1]
+
+  # Cálculo matrices transformación
+  T01 =matriz_T(d [0],th [0],a [0],al [0])
+  T12 =matriz_T(d [1],th [1],a [1],al [1])
+  T02 =np.dot(T01 ,T12)
+  T23 =matriz_T(d [2],th [2],a [2],al [2])
+  T03 =np.dot(T02, T23 )
+
+  T341 =matriz_T(d [3],th [3],a [3],al [3])
+  T041 =np.dot(T03, T341 )
+
+  T342 =matriz_T(d [4],th [4],a [4],al [4])
+  T042 =np.dot(T03, T342 )
+
+  T3EF =matriz_T(d [5],th [5],a [5],al [5])
+  T0EF =np.dot(T03, T3EF )
+
+
+  # Transformación de cada articulación
+  o10  =np.dot(T01 , o11 ).tolist()
+  o20  =np.dot(T02 , o22 ).tolist()
+  o30  =np.dot(T03 , o33 ).tolist()
+  o410  =np.dot(T041 , o4141 ).tolist()
+  o420  =np.dot(T042 , o4242 ).tolist()
+  oEF0  =np.dot(T0EF , oEFEF ).tolist()
+
+  ef = oEF0
+  OR = ramal([o00,o10, o20, o30,[[o410],[o420]]])
+  OT = np.array(OR).T
+  max_range = np.array([OT[0].max()-OT[0].min()
+                      ,OT[1].max()-OT[1].min()
+                      ,OT[2].max()-OT[2].min()
+                      ]).max()
+  Xb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten()
+      + 0.5*(OT[0].max()+OT[0].min()))
+  Yb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten()
+      + 0.5*(OT[1].max()+OT[1].min()))
+  Zb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten()
+      + 0.5*(OT[2].max()+OT[2].min()))
+  ax.cla()
+  for xb, yb, zb in zip(Xb, Yb, Zb):
+      ax.plot([xb], [yb], [zb], 'w')
+  ax.plot3D(OT[0],OT[1],OT[2],marker='s')
+  ax.plot3D([0],[0],[0],marker='o',color='k',ms=10)
+  if not ef:
+    ef = OR[-1]
+  ax.plot3D([ef[0]],[ef[1]],[ef[2]],marker='s',color='r')
+  ax.set_xlabel('X')
+  ax.set_ylabel('Y')
+  ax.set_zlabel('Z')
+
+
+
+# Bounding box cúbico para simular el ratio de aspecto correcto
+max_range = np.array([OT[0].max()-OT[0].min()
+                      ,OT[1].max()-OT[1].min()
+                      ,OT[2].max()-OT[2].min()
+                      ]).max()
+Xb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][0].flatten()
+    + 0.5*(OT[0].max()+OT[0].min()))
+Yb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][1].flatten()
+    + 0.5*(OT[1].max()+OT[1].min()))
+Zb = (0.5*max_range*np.mgrid[-1:2:2,-1:2:2,-1:2:2][2].flatten()
+    + 0.5*(OT[2].max()+OT[2].min()))
+for xb, yb, zb in zip(Xb, Yb, Zb):
+    ax.plot([xb], [yb], [zb], 'w')
+ax.plot3D(OT[0],OT[1],OT[2],marker='s')
+ax.plot3D([0],[0],[0],marker='o',color='k',ms=10)
+if not ef:
+  ef = OR[-1]
+ax.plot3D([ef[0]],[ef[1]],[ef[2]],marker='s',color='r')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+
+
+origin_slider.on_changed(update)
+elbow_slider.on_changed(update)
+wrist_slider.on_changed(update)
+claw_slider.on_changed(update)
+
+plt.show()
 
 input()
+
